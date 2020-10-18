@@ -21,7 +21,7 @@ VOC_CLASSES = (  # always index 0
     'with_mask', 'without_mask', 'mask_weared_incorrect')
 
 # note: if you used our download scripts, this should be right
-VOC_ROOT = osp.join(HOME, "data/archive/")
+VOC_ROOT = osp.dirname(osp.abspath(__file__))
 
 
 class VOCAnnotationTransform(object):
@@ -91,20 +91,20 @@ class VOCDetection(data.Dataset):
     """
 
     def __init__(self, root,
-                 image_sets=[('2007', 'trainval')],
+                 image_sets=[('face_mask_detection', 'trainval')],
                  transform=None, target_transform=VOCAnnotationTransform(),
-                 dataset_name='VOC0712'):
+                 dataset_name='face_mask_dataset'):
         self.root = root
         self.image_set = image_sets
         self.transform = transform
         self.target_transform = target_transform
         self.name = dataset_name
-        self._annopath = osp.join('C://Users//minds//data//archive//VOC2007', 'annotations', '%s.xml')
-        self._imgpath = osp.join('C://Users//minds//data//archive//VOC2007', 'images', '%s.png')
+        self._annopath = osp.join(self.root, 'face_mask_detection', 'annotations', '%s.xml')
+        self._imgpath = osp.join(self.root, 'face_mask_detection', 'images', '%s.png')
         self.ids = list()
-        for (year, name) in image_sets:
-            rootpath = osp.join(self.root, 'VOC' + year)
-            for line in open(osp.join(rootpath, 'ImageSets', 'Main', name + '.txt')):
+        for (set, opt) in image_sets:
+            rootpath = self.root
+            for line in open(osp.join(rootpath, set, 'Main', opt + '.txt')):
                 self.ids.append((rootpath, line.strip()))
 
     def __getitem__(self, index):
